@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
@@ -9,7 +8,8 @@ from .serializer import CongratulateSerializer
 
 class CongratulateListAPIView(ListCreateAPIView):
     """
-        Список записей поздравлений поьзователя
+        Записи поздравлений пользователя
+        Реализована пагинация по 10 записей
         Только аутентифицированные пользователи имеют доступ к данному эндпоинту.
     """
     serializer_class = CongratulateSerializer

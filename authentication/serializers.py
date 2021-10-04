@@ -1,13 +1,14 @@
 from django.contrib import auth
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -64,10 +65,6 @@ class LoginSerializer(serializers.ModelSerializer):
         filtered_user_by_email = User.objects.filter(email=email)
         user = auth.authenticate(email=email, password=password)
 
-        # if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
-        #     raise AuthenticationFailed(
-        #         detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
-
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again')
         if not user.is_active:
@@ -81,8 +78,6 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=2)
-
-    redirect_url = serializers.CharField(max_length=500, required=False)
 
     class Meta:
         fields = ['email']
@@ -118,22 +113,21 @@ class SetNewPasswordSerializer(serializers.Serializer):
             raise AuthenticationFailed('The reset link is invalid', 401)
 
 
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
 
-# class LogoutSerializer(serializers.Serializer):
-#     refresh = serializers.CharField()
-#
-#     default_error_message = {
-#         'bad_token': ('Token is expired or invalid')
-#     }
-#
-#     def validate(self, attrs):
-#         self.token = attrs['refresh']
-#         return attrs
-#
-#     def save(self, **kwargs):
-#
-#         try:
-#             RefreshToken(self.token).blacklist()
-#
-#         except TokenError:
-#             self.fail('bad_token')
+    default_error_message = {
+        'bad_token': ('Token is expired or invalid')
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+
+        try:
+            RefreshToken(self.token).blacklist()
+
+        except TokenError:
+            self.fail('bad_token')
