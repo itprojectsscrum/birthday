@@ -9,3 +9,6 @@ class Congratulate(models.Model):
     notify_by_email = models.BooleanField(default=True)
     notify_by_push = models.BooleanField(default=False)
     comment = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.bday_name

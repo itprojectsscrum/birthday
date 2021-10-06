@@ -48,6 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_index=True,
         unique=True
     )
+    # Флаг определяет верифицирован ли ользоатель при регистрации
+    is_verified = models.BooleanField(default=False)
 
     # Деактивиция учетной записи вместо ее полного удаления
     is_active = models.BooleanField(default=True)
