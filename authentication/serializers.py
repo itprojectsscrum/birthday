@@ -27,10 +27,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         # Указываем все поля, которые могут быть включены в запрос или ответ
         fields = ['email', 'password']
 
-    def validate(self, attrs):
-        email = attrs.get('email', '')
-        return attrs
-
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
@@ -77,7 +73,8 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Invalid credentials, try again')
         if not user.is_active:
             raise AuthenticationFailed('Account disabled, contact admin')
-
+        if not user.is_verified:
+            raise AuthenticationFailed('Email is not verified')
         return {
             'email': user.email,
             'tokens': user.tokens

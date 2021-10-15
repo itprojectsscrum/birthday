@@ -1,4 +1,5 @@
 import jwt
+# from django.middleware import csrf
 
 from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny
@@ -64,10 +65,7 @@ class VerifyEmailAPIView(GenericAPIView):
     def get(self, request):
         token = request.GET.get('token')
         try:
-            print(token)
-            print(settings.SECRET_KEY)
             payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=['HS256'])
-            print(payload)
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True
@@ -88,7 +86,21 @@ class LoginAPIView(GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        response = Response()
+        tokens = serializer.data['tokens']
+        response.set_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+            value=tokens["refresh"],
+            expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
+        # csrf.get_token(request)
+        response.data = {"Success": "Login successfully", "access": tokens['access']}
+        response.status_code = status.HTTP_200_OK
+        return response
 
 
 class RequestPasswordResetEmail(GenericAPIView):
@@ -98,7 +110,7 @@ class RequestPasswordResetEmail(GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
-        # serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data)
 
         email = request.data['email']
 
