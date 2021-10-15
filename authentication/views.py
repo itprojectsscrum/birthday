@@ -13,6 +13,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .models import User
 from .renderers import UserRenderer
@@ -22,7 +23,7 @@ from .serializers import (
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
-    LogoutSerializer,
+    LogoutSerializer, CookieTokenRefreshSerializer,
 )
 from .utils import Util
 
@@ -95,7 +96,8 @@ class LoginAPIView(GenericAPIView):
             expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+            # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
         )
         csrf.get_token(request)
         response.data = {"Success": "Login successfully", "access_token": tokens['access']}
@@ -178,3 +180,17 @@ class LogoutAPIView(GenericAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CookieTokenRefreshView(TokenRefreshView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('refresh'):
+            response.set_cookie(
+                'refresh_token',
+                response.data['refresh'],
+                # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
+                httponly=True,
+            )
+            del response.data['refresh']
+        return super().finalize_response(request, response, *args, **kwargs)
+    serializer_class = CookieTokenRefreshSerializer
