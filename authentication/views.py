@@ -1,5 +1,5 @@
 import jwt
-# from django.middleware import csrf
+from django.middleware import csrf
 
 from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny
@@ -97,8 +97,8 @@ class LoginAPIView(GenericAPIView):
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
         )
-        # csrf.get_token(request)
-        response.data = {"Success": "Login successfully", "access": tokens['access']}
+        csrf.get_token(request)
+        response.data = {"Success": "Login successfully", "access_token": tokens['access']}
         response.status_code = status.HTTP_200_OK
         return response
 
