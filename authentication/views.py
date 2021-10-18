@@ -183,6 +183,8 @@ class LogoutAPIView(GenericAPIView):
 
 
 class CookieTokenRefreshView(TokenRefreshView):
+    serializer_class = CookieTokenRefreshSerializer
+
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
             response.set_cookie(
@@ -193,4 +195,4 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
-    serializer_class = CookieTokenRefreshSerializer
+
