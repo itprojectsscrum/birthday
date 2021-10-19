@@ -141,9 +141,10 @@ class LogoutSerializer(serializers.Serializer):
 
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
+
     def validate(self, attrs):
         attrs['refresh'] = self.context['request'].COOKIES.get('refresh_token')
         if attrs['refresh']:
-            return super().validate(attrs)
+            return attrs
         else:
             raise InvalidToken('No valid token found in cookie \'refresh_token\'')

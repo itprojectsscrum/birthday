@@ -1,5 +1,5 @@
 import jwt
-from django.middleware import csrf
+# from django.middleware import csrf
 
 from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny
@@ -191,8 +191,8 @@ class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
             response.set_cookie(
-                'refresh_token',
-                response.data['refresh'],
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value=response.data['refresh'],
                 # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
@@ -201,3 +201,5 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
+
+
