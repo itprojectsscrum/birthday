@@ -8,6 +8,7 @@ class CongratulateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Congratulate
         fields = [
+            'id',
             'bday_name',
             'alert_datetime',
             'notify_by_email',

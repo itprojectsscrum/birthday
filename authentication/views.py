@@ -85,8 +85,11 @@ class LoginAPIView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
+
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        protocol = request.build_absolute_uri(request.get_host()).split('/')[0]
 
         response = Response()
         tokens = serializer.data['tokens']
@@ -94,7 +97,7 @@ class LoginAPIView(GenericAPIView):
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],
             value=tokens["refresh"],
             expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
@@ -183,7 +186,6 @@ class LogoutAPIView(GenericAPIView):
 
 
 class CookieTokenRefreshView(TokenRefreshView):
-    serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
@@ -196,3 +198,4 @@ class CookieTokenRefreshView(TokenRefreshView):
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
 
+    serializer_class = CookieTokenRefreshSerializer
