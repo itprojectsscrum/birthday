@@ -100,7 +100,7 @@ class LoginAPIView(GenericAPIView):
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-            # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
+            max_age=3600 * 24 * 365,
         )
         # csrf.get_token(request)
         response.data = {"Success": "Login successfully", "access_token": tokens['access']}
@@ -194,7 +194,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=response.data['refresh'],
                 # domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
-                # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
+                max_age=3600 * 24 * 365,
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
