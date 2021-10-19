@@ -194,7 +194,10 @@ class CookieTokenRefreshView(TokenRefreshView):
                 'refresh_token',
                 response.data['refresh'],
                 # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
-                httponly=True,
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             )
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
