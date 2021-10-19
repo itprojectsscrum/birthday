@@ -9,7 +9,6 @@ from .serializer import CongratulateSerializer
 class CongratulateListAPIView(ListCreateAPIView):
     """
         Записи поздравлений пользователя
-        Реализована пагинация по 10 записей
         Только аутентифицированные пользователи имеют доступ к данному эндпоинту.
     """
     serializer_class = CongratulateSerializer

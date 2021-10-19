@@ -193,6 +193,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             response.set_cookie(
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=response.data['refresh'],
+                # domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
                 # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
