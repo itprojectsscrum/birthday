@@ -46,6 +46,32 @@ CELERY_RESULT_BACKEND = 'django-db'
 # Transactions settings
 ATOMIC_REQUESTS = True
 
+# Cors headers
+# This allows in-browser requests to your Django application from other origins
+CORS_ALLOW_ALL_ORIGINS = True  # delete in deploy
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_WHITELIST = []  # add allow hosts in deploy
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -153,33 +179,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# Cors headers
-# This allows in-browser requests to your Django application from other origins
-CORS_ALLOW_ALL_ORIGINS = True  # delete in deploy
-CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_WHITELIST = []  # add allow hosts in deploy
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-)
-
-CORS_ALLOW_HEADERS = (
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-)
 
 #Rest framework settings
 REST_FRAMEWORK = {
