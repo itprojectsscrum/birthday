@@ -96,6 +96,7 @@ class LoginAPIView(GenericAPIView):
         response.set_cookie(
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],
             value=tokens["refresh"],
+            domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
             expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
@@ -193,7 +194,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             response.set_cookie(
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=response.data['refresh'],
-                # domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
                 max_age=3600 * 24 * 365,
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
