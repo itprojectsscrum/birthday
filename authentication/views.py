@@ -102,7 +102,7 @@ class LoginAPIView(GenericAPIView):
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             # max_age=settings.SIMPLE_JWT['SLIDING_TOKEN_REFRESH_LIFETIME'],
         )
-        csrf.get_token(request)
+        # csrf.get_token(request)
         response.data = {"Success": "Login successfully", "access_token": tokens['access']}
         response.status_code = status.HTTP_200_OK
         return response
@@ -186,6 +186,7 @@ class LogoutAPIView(GenericAPIView):
 
 
 class CookieTokenRefreshView(TokenRefreshView):
+    serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
@@ -197,5 +198,3 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
-
-    serializer_class = CookieTokenRefreshSerializer
