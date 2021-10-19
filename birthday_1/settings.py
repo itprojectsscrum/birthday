@@ -188,8 +188,9 @@ REST_FRAMEWORK = {
             'authentication.authenticate.CustomAuthentication',
             # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    # Pagination settings
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10
 }
 
 #Swagger settings
