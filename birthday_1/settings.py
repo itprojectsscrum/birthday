@@ -41,7 +41,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
 # CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_URL = env('REDIS_URL')
-CELERY_RESULT_BACKEND = env('REDIS_BACKEND')  # 'django-db'
+CELERY_RESULT_BACKEND  ='django-db'   # env('REDIS_BACKEND')
 
 # Transactions settings
 ATOMIC_REQUESTS = True
