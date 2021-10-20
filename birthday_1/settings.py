@@ -41,7 +41,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
 # CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_URL = env('REDIS_URL')
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = env('REDIS_BACKEND')  # 'django-db'
 
 # Transactions settings
 ATOMIC_REQUESTS = True
@@ -50,7 +50,7 @@ ATOMIC_REQUESTS = True
 # This allows in-browser requests to your Django application from other origins
 CORS_ALLOW_ALL_ORIGINS = True  # delete in deploy
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['https://congratulations-two.vercel.app', ]
+# CORS_ALLOWED_ORIGINS = ['https://congratulations-two.vercel.app', ]
 # CORS_ORIGIN_WHITELIST = ['https://congratulations-two.vercel.app', ]  # add allow hosts in deploy
 CORS_ALLOW_METHODS = (
     'DELETE',

@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+    redis:
+        image: redis
+        restart: always
+        container_name: 'app_redis'
+        command: redis-server
+        ports:
+            - '6379:6379'
+    web:
+        build: .
+        restart: always
+        container_name: 'app_django'
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/birthaday
+        ports:
+            - '8000:8000'
+    celery:
+        build: .
+        container_name: 'app_celery'
+        command: celery -A core worker -B
+        volumes:
+            - .:/birthaday
+        links:
+            - redis
+        depends_on:
+            - web
+            - redis

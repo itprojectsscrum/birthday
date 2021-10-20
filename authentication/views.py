@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import jwt
 # from django.middleware import csrf
 
@@ -97,9 +99,9 @@ class LoginAPIView(GenericAPIView):
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],
             value=tokens["refresh"],
             domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
-            expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            expires=datetime.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
-            # httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             max_age=3600 * 24 * 365,
         )
