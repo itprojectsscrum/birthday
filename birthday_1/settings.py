@@ -50,7 +50,8 @@ ATOMIC_REQUESTS = True
 # This allows in-browser requests to your Django application from other origins
 CORS_ALLOW_ALL_ORIGINS = True  # delete in deploy
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_WHITELIST = []  # add allow hosts in deploy
+CORS_ALLOWED_ORIGINS = ['https://congratulations-two.vercel.app', ]
+# CORS_ORIGIN_WHITELIST = ['https://congratulations-two.vercel.app', ]  # add allow hosts in deploy
 CORS_ALLOW_METHODS = (
     'DELETE',
     'GET',
