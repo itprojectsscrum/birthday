@@ -15,13 +15,11 @@ from pathlib import Path
 import django_heroku
 import environ
 
-
 env = environ.Env()
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -41,7 +39,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
 # CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_URL = env('REDIS_URL')
-CELERY_RESULT_BACKEND  ='django-db'   # env('REDIS_BACKEND')
+CELERY_RESULT_BACKEND = 'django-db'  # env('REDIS_BACKEND')
 
 # Transactions settings
 ATOMIC_REQUESTS = True
@@ -124,7 +122,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'birthday_1.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -156,7 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -170,7 +166,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -181,19 +176,19 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Rest framework settings
+# Rest framework settings
 REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-            'authentication.authenticate.CustomAuthentication',
-            # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'authentication.authenticate.CustomAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     # Pagination settings
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE': 10
 }
 
-#Swagger settings
+# Swagger settings
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'Bearer': {
@@ -235,11 +230,13 @@ SIMPLE_JWT = {
 
     # custom
     'AUTH_COOKIE': 'refresh_token',  # Cookie name. Enables cookies if value is set.
-    'AUTH_COOKIE_DOMAIN': 'birthdayappremainder.herokuapp.com',     # A string like "example.com", or None for standard domain cookie.
-    'AUTH_COOKIE_SECURE': True,    # Whether the auth cookies should be secure (https:// only).
+    'AUTH_COOKIE_DOMAIN': 'birthdayappremainder.herokuapp.com',
+    # A string like "example.com", or None for standard domain cookie.
+    'AUTH_COOKIE_SECURE': True,  # Whether the auth cookies should be secure (https:// only).
     'AUTH_COOKIE_HTTP_ONLY': True,  # Http only cookie flag.It's not fetch by javascript.
-    'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
-    'AUTH_COOKIE_SAMESITE': 'None',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
+    'AUTH_COOKIE_PATH': '/',  # The path of the auth cookie.
+    'AUTH_COOKIE_SAMESITE': 'None',
+    # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
 
 }
 

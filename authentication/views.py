@@ -86,29 +86,36 @@ class LoginAPIView(GenericAPIView):
     """
     serializer_class = LoginSerializer
 
-    def post(self, request):
+    ## With cookie
+    # def post(self, request):
+    #
+    #     serializer = self.serializer_class(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #
+    #     protocol = request.build_absolute_uri(request.get_host()).split('/')[0]
+    #
+    #     response = Response()
+    #     tokens = serializer.data['tokens']
+    #     response.set_cookie(
+    #         key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+    #         value=tokens["refresh"],
+    #         domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+    #         expires=datetime.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+    #         secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
+    #         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+    #         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+    #         max_age=3600 * 24 * 365,
+    #     )
+    #     # csrf.get_token(request)
+    #     response.data = {"Success": "Login successfully", "access_token": tokens['access']}
+    #     response.status_code = status.HTTP_200_OK
+    #     return response
 
+    # With local
+    def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        protocol = request.build_absolute_uri(request.get_host()).split('/')[0]
-
-        response = Response()
-        tokens = serializer.data['tokens']
-        response.set_cookie(
-            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-            value=tokens["refresh"],
-            domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
-            expires=datetime.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
-            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-            max_age=3600 * 24 * 365,
-        )
-        # csrf.get_token(request)
-        response.data = {"Success": "Login successfully", "access_token": tokens['access']}
-        response.status_code = status.HTTP_200_OK
-        return response
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RequestPasswordResetEmail(GenericAPIView):
