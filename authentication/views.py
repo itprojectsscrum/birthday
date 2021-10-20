@@ -99,7 +99,7 @@ class LoginAPIView(GenericAPIView):
             # domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
             expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
-            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            # httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             max_age=3600 * 24 * 365,
         )
@@ -198,7 +198,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 max_age=3600 * 24 * 365,
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
-                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                # httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             )
             del response.data['refresh']
