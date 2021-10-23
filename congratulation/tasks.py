@@ -1,3 +1,4 @@
+from django.conf import settings
 from celery import shared_task
 from datetime import datetime, timedelta
 
@@ -9,7 +10,7 @@ from .models import Congratulate
 def to_schedule():
     congratulates = Congratulate.objects.\
         filter(alert_datetime__gte=datetime.now()).\
-        filter(alert_datetime__lt=datetime.now() + timedelta(minutes=5))
+        filter(alert_datetime__lt=datetime.now() + timedelta(minutes=1))  # As app.conf.beat_schedule
     data = {}
     for congratulate in congratulates:
         if congratulate:
