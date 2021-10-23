@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
@@ -88,5 +90,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         refresh = RefreshToken.for_user(self)
         return {
             'refresh': str(refresh),
-            'access': str(refresh.access_token)
+            'refresh_live': str(datetime.now() + refresh.lifetime),
+            'access': str(refresh.access_token),
+            'access_live': str(datetime.now() + refresh.access_token.lifetime),
         }

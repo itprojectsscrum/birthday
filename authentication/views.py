@@ -25,7 +25,7 @@ from .serializers import (
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
-    LogoutSerializer, CookieTokenRefreshSerializer,
+    LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer,
 )
 from .utils import Util
 
@@ -212,5 +212,10 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
+
 
 

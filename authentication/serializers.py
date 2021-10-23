@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import auth
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
@@ -7,8 +9,10 @@ from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from birthday import settings
 from .models import User
 
 
@@ -57,7 +61,9 @@ class LoginSerializer(serializers.ModelSerializer):
 
         return {
             'refresh': user.tokens()['refresh'],
-            'access': user.tokens()['access']
+            'refresh_live': user.tokens()['refresh_live'],
+            'access': user.tokens()['access'],
+            'access_live': user.tokens()['access_live'],
         }
 
     class Meta:
@@ -147,3 +153,14 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
             return attrs
         else:
             raise InvalidToken('No valid token found in cookie \'refresh_token\'')
+
+
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+
+    def validate(self, attrs):
+        data = super(CustomTokenRefreshSerializer, self).validate(attrs)
+        decoded_payload = token_backend.decode(data['access'], verify=True)
+        user_uid=decoded_payload['user_id']
+        # add filter query
+        data.update({'access_live': str(datetime.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'])})
+        return data
