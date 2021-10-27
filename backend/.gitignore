@@ -1,6 +1,6 @@
-birthday/.env
+.env
 .idea
 __pycache__
 .pyc
 venv
-.sqlite3
+db.sqlite3

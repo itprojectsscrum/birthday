@@ -17,7 +17,7 @@ RUN apt-get -y clean && apt-get -y update \
   && rm -rf /var/lib/apt/lists/*
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./requirements.txt /requirements.txt
+COPY requirements.txt /requirements.txt
 RUN apt-get -y clean && apt-get -y update \
   && apt-get install -y python3-brlapi \
   && apt-get install -y command-not-found \
@@ -37,19 +37,19 @@ RUN apt-get -y clean && apt-get -y update \
   && /usr/local/bin/python -m pip install --upgrade pip \
   && pip install -r /requirements.txt
 
-COPY ./entrypoint /entrypoint
+COPY entrypoint /entrypoint
 RUN chmod +x /entrypoint
 
-COPY ./start /start
+COPY start /start
 RUN chmod +x /start
 
-COPY ./celery/worker/start /start-celeryworker
+COPY celery/worker/start /start-celeryworker
 RUN chmod +x /start-celeryworker
 
-COPY ./celery/beat/start /start-celerybeat
+COPY celery/beat/start /start-celerybeat
 RUN chmod +x /start-celerybeat
 
-COPY ./celery/flower/start /start-flower
+COPY celery/flower/start /start-flower
 RUN chmod +x /start-flower
 
 WORKDIR /app
