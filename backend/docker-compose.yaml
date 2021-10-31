@@ -15,6 +15,7 @@ services:
         ports:
             - "8010:8000"
             - "587:587"
+        restart: always
         # env_file is used to manage the env variables of our project
         env_file:
             - birthday/.env
@@ -25,6 +26,7 @@ services:
         image: postgres:12.0-alpine
         volumes:
             - postgres_data:/var/lib/postgresql/data/
+        restart: always
         environment:
             - POSTGRES_DB=hello_django_dev
             - POSTGRES_USER=hello_django
@@ -41,6 +43,7 @@ services:
         command: /start-celeryworker
         volumes:
             - .:/app
+        restart: always
         env_file:
             - birthday/.env
         depends_on:
@@ -55,6 +58,7 @@ services:
         command: /start-celerybeat
         volumes:
             - .:/app
+        restart: always
         env_file:
             - birthday/.env
         depends_on:
@@ -69,10 +73,11 @@ services:
         command: /start-flower
         volumes:
             - .:/app
+        restart: always
         env_file:
             - birthday/.env
         ports:
-            - 5557:5555
+            - "5557:5555"
         depends_on:
             - redis
             - db

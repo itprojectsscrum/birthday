@@ -41,7 +41,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    Определим модель поьзователя с полям "Email" и полями, опделяющими права доступа
+    Определим модель поьзователя с полем "Email" и полями, опделяющими права доступа
     """
 
     email = models.EmailField(
