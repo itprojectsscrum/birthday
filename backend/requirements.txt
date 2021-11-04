@@ -88,3 +88,4 @@ django-celery-results==2.2.0
 flower==1.0.0
 
 Faker==9.7.1
+mock==4.0.3

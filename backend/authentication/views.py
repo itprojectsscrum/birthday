@@ -141,7 +141,9 @@ class RequestPasswordResetEmail(GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your password'}
             Util.send_email(data)
-        return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+            return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Email not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class PasswordTokenCheckAPIView(GenericAPIView):
@@ -159,7 +161,7 @@ class PasswordTokenCheckAPIView(GenericAPIView):
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response({'error': 'Token is not valid, please request a new one'})
 
-            return Response({'success': True, 'messagee': 'Creantails Vaild', 'uidb64': uidb64})
+            return Response({'success': True, 'message': 'Creantails Vaild', 'uidb64': uidb64})
         except DjangoUnicodeDecodeError as e:
             return Response({'error': 'Token is not valid, please request a new one'})
 

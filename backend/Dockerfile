@@ -1,8 +1,14 @@
-FROM python:3.8
+# pull official base image
+FROM python:3.8-alpine
 
+# set work directory
+WORKDIR /usr/src/app
+
+# set environment variables
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+# install dependencies
 RUN apt-get -y clean && apt-get -y update \
   # dependencies for building Python packages
   && apt-get install -y build-essential \
@@ -37,6 +43,7 @@ RUN apt-get -y clean && apt-get -y update \
   && /usr/local/bin/python -m pip install --upgrade pip \
   && pip install -r /requirements.txt
 
+# copy project
 COPY entrypoint /entrypoint
 RUN chmod +x /entrypoint
 
