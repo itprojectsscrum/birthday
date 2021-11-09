@@ -99,5 +99,4 @@ volumes:
   postgres_data:
   certs:
   html:
-  vhost:
   acme:
