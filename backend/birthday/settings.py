@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'very_secret_key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'very_secret_key_+356!#9875*/&^35f3f6d')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(" ")
 
 # Celery Configuration Options
 CELERY_TIMEZONE = "UTC"
@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'polls',
     'validator',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +121,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'birthday.wsgi.application'
+# WSGI_APPLICATION = 'birthday.wsgi.application'
+ASGI_APPLICATION = 'django_celery_example.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -253,3 +255,14 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
 django_heroku.settings(locals())
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.environ.get("CHANNELS_REDIS", "redis://127.0.0.1:6379/0"))],
+        },
+    },
+}
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

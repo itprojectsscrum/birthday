@@ -1,29 +1,23 @@
-# pull official base image
-FROM python:3.8-alpine
+FROM python:3.8
 
-# set work directory
-WORKDIR /usr/src/app
-
-# set environment variables
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
 
-# install dependencies
-RUN apt-get -y clean && apt-get -y update \
+RUN apt-get update \
   # dependencies for building Python packages
-  && apt-get install -y build-essential \
+  && apt-get install -y build-essential netcat \
   # psycopg2 dependencies
   && apt-get install -y libpq-dev \
   # Translations dependencies
   && apt-get install -y gettext \
-  # Additional dependencies
-  && apt-get install -y procps \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
+RUN addgroup --system django \
+    && adduser --system --ingroup django django
+
 # Requirements are installed here to ensure they will be cached.
-COPY requirements.txt /requirements.txt
+COPY ./requirements.txt /requirements.txt
 RUN apt-get -y clean && apt-get -y update \
   && apt-get install -y python3-brlapi \
   && apt-get install -y command-not-found \
@@ -43,22 +37,34 @@ RUN apt-get -y clean && apt-get -y update \
   && /usr/local/bin/python -m pip install --upgrade pip \
   && pip install -r /requirements.txt
 
-# copy project
-COPY entrypoint /entrypoint
+COPY ./compose/production/django/entrypoint /entrypoint
 RUN chmod +x /entrypoint
+RUN chown django /entrypoint
 
-COPY start /start
+COPY ./compose/production/django/start /start
 RUN chmod +x /start
+RUN chown django /start
 
-COPY celery/worker/start /start-celeryworker
+COPY ./compose/production/django/celery/worker/start /start-celeryworker
 RUN chmod +x /start-celeryworker
+RUN chown django /start-celeryworker
 
-COPY celery/beat/start /start-celerybeat
+COPY ./compose/production/django/celery/beat/start /start-celerybeat
 RUN chmod +x /start-celerybeat
+RUN chown django /start-celerybeat
 
-COPY celery/flower/start /start-flower
+COPY ./compose/production/django/celery/flower/start /start-flower
 RUN chmod +x /start-flower
 
+RUN mkdir /app
+
 WORKDIR /app
+
+# copy project code
+COPY . .
+
+RUN chown -R django:django /app
+
+USER django
 
 ENTRYPOINT ["/entrypoint"]

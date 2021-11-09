@@ -89,3 +89,6 @@ flower==1.0.0
 
 Faker==9.7.1
 mock==4.0.3
+uvicorn[standard]==0.13.2
+channels==3.0.2
+channels-redis==3.2.0

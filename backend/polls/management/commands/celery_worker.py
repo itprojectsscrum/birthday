@@ -8,8 +8,6 @@ from django.utils import autoreload
 
 def restart_celery():
     cmd = 'pkill -f "celery worker"'
-    if sys.platform == 'win32':
-        cmd = 'taskkill /f /t /im celery.exe'
 
     subprocess.call(shlex.split(cmd))
     subprocess.call(shlex.split('celery -A birthday worker --loglevel=info'))

@@ -3,8 +3,8 @@ version: "3.8"
 services:
     web:
         build:
-            context: ./
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: compose/local/django/Dockerfile
         image: birthday_web
         # '/start' is the shell script used to run the service
         command: /start
@@ -18,7 +18,7 @@ services:
         restart: always
         # env_file is used to manage the env variables of our project
         env_file:
-            - birthday/.env
+            - ./.env/.dev
         depends_on:
             - redis
             - db
@@ -37,45 +37,45 @@ services:
 
     celery_worker:
         build:
-            context: ./
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: compose/local/django/Dockerfile
         image: birthday_celery_worker
         command: /start-celeryworker
         volumes:
             - .:/app
         restart: always
         env_file:
-            - birthday/.env
+            - ./.env/.dev
         depends_on:
             - redis
             - db
 
     celery_beat:
         build:
-            context: ./
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: compose/local/django/Dockerfile
         image: birthday_celery_beat
         command: /start-celerybeat
         volumes:
             - .:/app
         restart: always
         env_file:
-            - birthday/.env
+            - ./.env/.dev
         depends_on:
             - redis
             - db
 
     flower:
         build:
-            context: ./
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: compose/local/django/Dockerfile
         image: birthday_celery_flower
         command: /start-flower
         volumes:
             - .:/app
         restart: always
         env_file:
-            - birthday/.env
+            - ./.env/.dev
         ports:
             - "5557:5555"
         depends_on:
