@@ -22,8 +22,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     # Проверяем, что пароль содержит не менее 4 символов, не более 128,
     # и так же что он не может быть прочитан клиентской стороной
     password = serializers.CharField(
-        max_length=128,
-        min_length=4,
+        max_length=50,
+        min_length=6,
         write_only=True
     )
 
@@ -46,12 +46,12 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-        max_length=255,
-        min_length=4
+        max_length=100,
+        min_length=7
     )
     password = serializers.CharField(
-        max_length=128,
-        min_length=4,
+        max_length=50,
+        min_length=6,
         write_only=True)
 
     tokens = serializers.SerializerMethodField()
@@ -88,7 +88,8 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
-    email = serializers.EmailField(min_length=2)
+    email = serializers.EmailField(min_length=7,
+                                   max_length=100)
 
     class Meta:
         fields = ['email']
@@ -96,7 +97,7 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
 
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(
-        min_length=4, max_length=128, write_only=True)
+        min_length=6, max_length=50, write_only=True)
     token = serializers.CharField(
         min_length=1, write_only=True)
     uidb64 = serializers.CharField(
