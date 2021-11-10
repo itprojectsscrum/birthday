@@ -124,6 +124,8 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'birthday.wsgi.application'
 ASGI_APPLICATION = 'django_celery_example.asgi.application'
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -264,5 +266,3 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
