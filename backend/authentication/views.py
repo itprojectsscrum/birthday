@@ -25,7 +25,8 @@ from .serializers import (
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
-    LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer,
+    LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer, RepeatVerifyEmailSerializer,
+    SetNewEmailSerializer,
 )
 from .utils import Util
 
@@ -45,17 +46,7 @@ class RegistrationAPIView(GenericAPIView):
         serializer.save()
         user_data = serializer.data
         user = User.objects.get(email=user_data['email'])
-        token = RefreshToken.for_user(user).access_token
-        current_site = get_current_site(request).domain
-        relative_link = reverse('email-verify')
-        absurl = f'http://{current_site}{relative_link}?token={str(token)}'
-        email_body = f'Hello. Use link below to verify your email \n{absurl}'
-        data = {
-            'email_subject': 'Verify your email',
-            'email_body': email_body,
-            'to_email': user.email
-        }
-        Util.send_email(data)
+        send_verify_email(request, user)
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
@@ -120,7 +111,8 @@ class LoginAPIView(GenericAPIView):
 
 class RequestPasswordResetEmail(GenericAPIView):
     """
-        Отправка Email пользователю для подтверждения запроса на смену пароля
+        Отправка Email пользователю для подтверждения запроса на смену пароля.
+        change_field: 'email' or password
     """
     serializer_class = ResetPasswordEmailRequestSerializer
 
@@ -128,20 +120,21 @@ class RequestPasswordResetEmail(GenericAPIView):
         serializer = self.serializer_class(data=request.data)
 
         email = request.data['email']
+        change_field = request.data['change_field']
 
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(request=request).domain
-            relative_link = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            relative_link = reverse(f'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
             absurl = 'http://' + current_site + relative_link
-            email_body = 'Hello,\n Use link below to reset your password \n' + absurl
+            email_body = f'Hello,\n Use link below to reset your {change_field} \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Reset your password'}
+                    'email_subject': f'Reset your {change_field}'}
             Util.send_email(data)
-            return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+            return Response({'success': f'We have sent you a link to reset your {change_field}'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Email not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -178,6 +171,18 @@ class SetNewPasswordAPIView(GenericAPIView):
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
 
 
+class SetNewEmailAPIView(GenericAPIView):
+    """
+       Установка нового email
+    """
+    serializer_class = SetNewEmailSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Email reset success'}, status=status.HTTP_200_OK)
+
+
 class LogoutAPIView(GenericAPIView):
     """
        Выход из профиля пользователя
@@ -208,7 +213,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
                 max_age=3600 * 24 * 365,
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],  # True if protocol == 'https:' else False,
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 # httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             )
@@ -220,4 +225,32 @@ class CustomTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
 
 
+class RepeatVerifyEmailAPIView(GenericAPIView):
+    serializer_class = RepeatVerifyEmailSerializer
+    renderer_classes = (UserRenderer,)
 
+    def post(self, request):
+        user = request.data
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        user_data = serializer.data
+        user = User.objects.filter(email=user_data['email']).first()
+        if user:
+            send_verify_email(request, user)
+            return Response(user_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Email not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+def send_verify_email(request, user):
+    token = RefreshToken.for_user(user).access_token
+    current_site = get_current_site(request).domain
+    relative_link = reverse('email-verify')
+    absurl = f'http://{current_site}{relative_link}?token={str(token)}'
+    email_body = f'Hello. Use link below to verify your email \n{absurl}'
+    data = {
+        'email_subject': 'Verify your email',
+        'email_body': email_body,
+        'to_email': user.email
+    }
+    Util.send_email(data)

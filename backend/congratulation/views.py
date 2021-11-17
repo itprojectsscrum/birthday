@@ -19,7 +19,7 @@ class CongratulateListAPIView(ListCreateAPIView):
         return serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user)
+        return self.queryset.filter(owner=self.request.user).order_by('-alert_datetime')
 
 
 class CongratulateDetailAPIView(RetrieveUpdateDestroyAPIView):

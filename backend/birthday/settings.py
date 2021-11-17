@@ -122,7 +122,7 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'birthday.wsgi.application'
-ASGI_APPLICATION = 'django_celery_example.asgi.application'
+ASGI_APPLICATION = 'birthday.asgi.application'
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 

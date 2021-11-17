@@ -19,7 +19,7 @@ from .models import User
 class RegistrationSerializer(serializers.ModelSerializer):
     """ Сериализация регистрации пользователя и создания нового. """
 
-    # Проверяем, что пароль содержит не менее 4 символов, не более 128,
+    # Проверяем, что пароль содержит не менее 6 символов, не более 50,
     # и так же что он не может быть прочитан клиентской стороной
     password = serializers.CharField(
         max_length=50,
@@ -90,9 +90,11 @@ class LoginSerializer(serializers.ModelSerializer):
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=7,
                                    max_length=100)
+    change_field = serializers.CharField(
+        min_length=4, max_length=50)
 
     class Meta:
-        fields = ['email']
+        fields = ['email', 'change_field']
 
 
 class SetNewPasswordSerializer(serializers.Serializer):
@@ -118,6 +120,36 @@ class SetNewPasswordSerializer(serializers.Serializer):
                 raise AuthenticationFailed('The reset link is invalid', 401)
 
             user.set_password(password)
+            user.save()
+
+            return (user)
+        except Exception as e:
+            raise AuthenticationFailed('The reset link is invalid', 401)
+
+
+class SetNewEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=7,
+                                   max_length=100)
+    token = serializers.CharField(
+        min_length=1, write_only=True)
+    uidb64 = serializers.CharField(
+        min_length=1, write_only=True)
+
+    class Meta:
+        fields = ['email', 'token', 'uidb64']
+
+    def validate(self, attrs):
+        try:
+            email = attrs.get('email')
+            token = attrs.get('token')
+            uidb64 = attrs.get('uidb64')
+
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise AuthenticationFailed('The reset link is invalid', 401)
+
+            user.email = email
             user.save()
 
             return (user)
@@ -165,3 +197,12 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         # add filter query
         data.update({'access_live': str(datetime.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'])})
         return data
+
+
+class RepeatVerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=7,
+                                   max_length=100)
+
+    class Meta:
+        model = User
+        fields = ['email']
