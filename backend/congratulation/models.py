@@ -12,3 +12,6 @@ class Congratulate(models.Model):
 
     def __str__(self):
         return self.bday_name
+
+    class Meta:
+        ordering = ['-alert_datetime']
