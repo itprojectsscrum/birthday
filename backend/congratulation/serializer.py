@@ -12,7 +12,7 @@ class CongratulateSerializer(serializers.ModelSerializer):
             'bday_name',
             'alert_datetime',
             'notify_by_email',
-            'notify_by_push',
+            # 'notify_by_push',
             'comment'
         ]
 
