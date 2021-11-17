@@ -206,3 +206,13 @@ class RepeatVerifyEmailSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = ['email']
+
+
+class SupportEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=7,
+                                   max_length=100)
+    name = serializers.CharField(min_length=1)
+    body = serializers.CharField(min_length=1)
+
+    class Meta:
+        fields = ['email', 'name', 'body']

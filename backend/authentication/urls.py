@@ -13,6 +13,7 @@ from authentication.views import (
     CookieTokenRefreshView,
     CustomTokenRefreshView,
     RepeatVerifyEmailAPIView,
+    SupportEmailAPIView,
 )
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path('password-reset/<uidb64>/<token>/', PasswordTokenCheckAPIView.as_view(), name='password-reset-confirm'),
     path('password-reset-complete', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
     path('email-reset-complete', SetNewEmailAPIView.as_view(), name='email-reset-complete'),
+    path('support-email', SupportEmailAPIView.as_view(), name='support-email'),
 ]

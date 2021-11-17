@@ -27,6 +27,7 @@ from .serializers import (
     SetNewPasswordSerializer,
     LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer, RepeatVerifyEmailSerializer,
     SetNewEmailSerializer,
+    SupportEmailSerializer,
 )
 from .utils import Util
 
@@ -254,3 +255,25 @@ def send_verify_email(request, user):
         'to_email': user.email
     }
     Util.send_email(data)
+
+
+class SupportEmailAPIView(GenericAPIView):
+    """
+        Отправка Email службе поддержки
+    """
+    serializer_class = SupportEmailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+
+        name = data['name']
+        email = data['email']
+        body = data['body']
+
+        data = {'email_body': f'From: {name}\n Email: {email}\n + Message: {body}',
+                'to_email': settings.EMAIL_SUPPORT,
+                'email_subject': 'Support user'}
+        Util.send_email(data)
+        return Response({'success': f'We have sent email'}, status=status.HTTP_200_OK)
