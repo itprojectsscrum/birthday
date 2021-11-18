@@ -26,7 +26,6 @@ from .serializers import (
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
     LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer, RepeatVerifyEmailSerializer,
-    SetNewEmailSerializer,
     SupportEmailSerializer,
 )
 from .utils import Util

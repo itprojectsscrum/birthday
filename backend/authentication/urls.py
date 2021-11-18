@@ -8,7 +8,6 @@ from authentication.views import (
     PasswordTokenCheckAPIView,
     RequestPasswordResetEmail,
     SetNewPasswordAPIView,
-    SetNewEmailAPIView,
     LogoutAPIView,
     CookieTokenRefreshView,
     CustomTokenRefreshView,
