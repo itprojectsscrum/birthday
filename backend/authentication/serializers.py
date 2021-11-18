@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
@@ -12,7 +13,6 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from birthday import settings
 from .models import User
 
 
@@ -90,11 +90,9 @@ class LoginSerializer(serializers.ModelSerializer):
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=7,
                                    max_length=100)
-    change_field = serializers.CharField(
-        min_length=4, max_length=50)
 
     class Meta:
-        fields = ['email', 'change_field']
+        fields = ['email']
 
 
 class SetNewPasswordSerializer(serializers.Serializer):
@@ -120,36 +118,6 @@ class SetNewPasswordSerializer(serializers.Serializer):
                 raise AuthenticationFailed('The reset link is invalid', 401)
 
             user.set_password(password)
-            user.save()
-
-            return (user)
-        except Exception as e:
-            raise AuthenticationFailed('The reset link is invalid', 401)
-
-
-class SetNewEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField(min_length=7,
-                                   max_length=100)
-    token = serializers.CharField(
-        min_length=1, write_only=True)
-    uidb64 = serializers.CharField(
-        min_length=1, write_only=True)
-
-    class Meta:
-        fields = ['email', 'token', 'uidb64']
-
-    def validate(self, attrs):
-        try:
-            email = attrs.get('email')
-            token = attrs.get('token')
-            uidb64 = attrs.get('uidb64')
-
-            id = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(id=id)
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                raise AuthenticationFailed('The reset link is invalid', 401)
-
-            user.email = email
             user.save()
 
             return (user)

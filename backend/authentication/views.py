@@ -113,7 +113,6 @@ class LoginAPIView(GenericAPIView):
 class RequestPasswordResetEmail(GenericAPIView):
     """
         Отправка Email пользователю для подтверждения запроса на смену пароля.
-        change_field: 'email' or password
     """
     serializer_class = ResetPasswordEmailRequestSerializer
 
@@ -121,7 +120,6 @@ class RequestPasswordResetEmail(GenericAPIView):
         serializer = self.serializer_class(data=request.data)
 
         email = request.data['email']
-        change_field = request.data['change_field']
 
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
@@ -131,11 +129,11 @@ class RequestPasswordResetEmail(GenericAPIView):
             relative_link = reverse(f'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
             absurl = 'http://' + current_site + relative_link
-            email_body = f'Hello,\n Use link below to reset your {change_field} \n' + absurl
+            email_body = 'Hello,\n Use link below to reset your password \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': f'Reset your {change_field}'}
+                    'email_subject': 'Reset your password'}
             Util.send_email(data)
-            return Response({'success': f'We have sent you a link to reset your {change_field}'}, status=status.HTTP_200_OK)
+            return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Email not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -170,18 +168,6 @@ class SetNewPasswordAPIView(GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
-
-
-class SetNewEmailAPIView(GenericAPIView):
-    """
-       Установка нового email
-    """
-    serializer_class = SetNewEmailSerializer
-
-    def patch(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response({'success': True, 'message': 'Email reset success'}, status=status.HTTP_200_OK)
 
 
 class LogoutAPIView(GenericAPIView):
