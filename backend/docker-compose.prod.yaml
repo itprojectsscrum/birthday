@@ -61,7 +61,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     expose:
-      - 8000
+      - 15672
     env_file:
       - ./.env/.prod
 
