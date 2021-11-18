@@ -8,11 +8,11 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Birthday Remainder API",
+      title="Birthday book API",
       default_version='v1',
       description="Test description",
-      terms_of_service="https://www.birthday-remainder.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
+      terms_of_service="https://bdaybook.ru/policies/terms/",
+      contact=openapi.Contact(email="supp.bdaybook@gmail.com"),
       license=openapi.License(name="Test License"),
    ),
    public=True,
@@ -24,7 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),
     path('congratulations/', include('congratulation.urls')),
-    path('validator/', include('validator.urls')),
     path('api/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
