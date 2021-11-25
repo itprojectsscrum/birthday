@@ -100,13 +100,15 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    access_token = serializers.CharField(max_length=555)
     password = serializers.CharField(
-        min_length=6, max_length=50, write_only=True)
+        min_length=6,
+        max_length=50,
+        write_only=True
+    )
 
     class Meta:
         model = User
-        fields = ['access_token', 'password']
+        fields = ['password']
 
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
