@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import jwt
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -11,7 +12,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.state import token_backend
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from .models import User
 
@@ -96,6 +97,16 @@ class LoginSerializer(serializers.ModelSerializer):
             'email': user.email,
             'tokens': user.tokens
         }
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    access_token = serializers.CharField(max_length=555)
+    password = serializers.CharField(
+        min_length=6, max_length=50, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['access_token', 'password']
 
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):

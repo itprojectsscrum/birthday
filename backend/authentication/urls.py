@@ -6,14 +6,15 @@ from authentication.views import (
     VerifyEmailAPIView,
     IsEmailVerifyAPIView,
     LoginAPIView,
-    PasswordTokenCheckAPIView,
-    RequestPasswordResetEmail,
-    SetNewPasswordAPIView,
+    # PasswordTokenCheckAPIView,
+    # RequestPasswordResetEmail,
+    # SetNewPasswordAPIView,
     LogoutAPIView,
     CookieTokenRefreshView,
     CustomTokenRefreshView,
     RepeatVerifyEmailAPIView,
     SupportEmailAPIView,
+    ChangePasswordAPIView,
 )
 
 urlpatterns = [
@@ -24,8 +25,9 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
-    path('password-reset-email/', RequestPasswordResetEmail.as_view(), name='password-reset-email'),
-    path('password-reset/<uidb64>/<token>/', PasswordTokenCheckAPIView.as_view(), name='password-reset-confirm'),
-    path('password-reset-complete', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
+    path('password-change/', ChangePasswordAPIView.as_view(), name='password-change'),
+    # path('password-reset-email/', RequestPasswordResetEmail.as_view(), name='password-reset-email'),
+    # path('password-reset/<uidb64>/<token>/', PasswordTokenCheckAPIView.as_view(), name='password-reset-confirm'),
+    # path('password-reset-complete', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
     path('support-email', SupportEmailAPIView.as_view(), name='support-email'),
 ]
