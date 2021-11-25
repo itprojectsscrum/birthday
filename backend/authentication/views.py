@@ -27,6 +27,7 @@ from .serializers import (
     SetNewPasswordSerializer,
     LogoutSerializer, CookieTokenRefreshSerializer, CustomTokenRefreshSerializer, RepeatVerifyEmailSerializer,
     SupportEmailSerializer,
+    IsEmailVerificationSerializer,
 )
 from .utils import Util
 
@@ -69,6 +70,25 @@ class VerifyEmailAPIView(GenericAPIView):
             return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IsEmailVerifyAPIView(GenericAPIView):
+    """
+    Проверка верификации пользоваетеля
+    """
+    serializer_class = IsEmailVerificationSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.data['email']
+        user = User.objects.filter(email=email).first()
+        if user:
+            if user.is_verified:
+                return Response({'email': 'Email is verified'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'email': 'Email not verified'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Email not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class LoginAPIView(GenericAPIView):

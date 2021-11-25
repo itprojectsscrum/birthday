@@ -44,6 +44,17 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
         fields = ['token']
 
 
+class IsEmailVerificationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        max_length=100,
+        min_length=7
+    )
+
+    class Meta:
+        model = User
+        fields = ['email']
+
+
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         max_length=100,
