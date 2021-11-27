@@ -36,7 +36,7 @@ services:
   react-app:
     build:
       context: .
-      dockerfile: ../frontend/Dockerfile.prod
+      dockerfile: ../frontend/congratulations-front/Dockerfile.prod
       args:
         - REACT_APP_NAME1=EvgeniyOm-prod
     ports:
