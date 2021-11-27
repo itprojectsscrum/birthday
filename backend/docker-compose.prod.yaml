@@ -33,6 +33,17 @@ services:
     depends_on:
       - nginx-proxy
 
+  react-app:
+    build:
+      context: .
+      dockerfile: ../frontend/Dockerfile.prod
+      args:
+        - REACT_APP_NAME1=EvgeniyOm-prod
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
   web:
     build:
       context: .

@@ -2,11 +2,13 @@ from datetime import datetime
 
 import jwt
 # from django.middleware import csrf
+from drf_yasg import openapi
 
 from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
+from rest_framework.serializers import BaseSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -16,6 +18,7 @@ from django.urls import reverse
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework_simplejwt.views import TokenRefreshView
+from drf_yasg.utils import swagger_auto_schema
 
 from .models import User
 from .renderers import UserRenderer
@@ -36,11 +39,15 @@ from .utils import Util
 class RegistrationAPIView(GenericAPIView):
     """
     Регистация нового пользователя
+
+    Регистация нового пользователя
     """
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
     renderer_classes = (UserRenderer,)
+    registation_response = openapi.Response('Успешная регистрация')
 
+    @swagger_auto_schema(responses={200: registation_response})
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
@@ -215,6 +222,7 @@ class SetNewPasswordAPIView(GenericAPIView):
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
 
 
+
 class LogoutAPIView(GenericAPIView):
     """
        Выход из профиля пользователя
@@ -225,6 +233,7 @@ class LogoutAPIView(GenericAPIView):
 
     permission_classes = (permissions.IsAuthenticated,)
 
+    @swagger_auto_schema(responses={401: openapi.Response('Не авторизован'), 204: openapi.Response('Выход из профиля пользователя')})
     def post(self, request):
 
         serializer = self.serializer_class(data=request.data)
