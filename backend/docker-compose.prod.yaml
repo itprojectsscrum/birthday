@@ -7,23 +7,12 @@ services:
     build: ./compose/production/nginx
     restart: always
     ports:
-      - "80:80"
       - "8000:8000"
       - "5555:5555"
       - "15672:15672"
     depends_on:
       - web
       - flower
-      - react-app
-
-  react-app:
-    build:
-      context: .
-      dockerfile: ./compose/production/react/Dockerfile
-      args:
-        - REACT_APP_NAME1=EvgeniyOm-prod
-    depends_on:
-      - web
 
   web:
     build:
