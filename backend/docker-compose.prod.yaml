@@ -34,6 +34,17 @@ services:
     depends_on:
       - nginx-proxy
 
+  react-app:
+    build:
+      context: .
+      dockerfile: ./compose/production/react/Dockerfile
+      args:
+        - REACT_APP_NAME1=EvgeniyOm-prod
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+
   web:
     build:
       context: .
