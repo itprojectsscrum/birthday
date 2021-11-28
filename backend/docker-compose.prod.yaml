@@ -2,38 +2,18 @@ version: '3.8'
 
 services:
 
-  nginx-proxy:
-    container_name: nginx-proxy
+  nginx:
     build: ./compose/production/nginx
     restart: always
     ports:
-      - "80:3000"
-      - "443:443"
+      - "80:80"
       - "8000:8000"
       - "5555:5555"
       - "15672:15672"
-    volumes:
-      - certs:/etc/nginx/certs
-      - html:/usr/share/nginx/html
-      - vhost:/etc/nginx/vhost.d
-      - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - web
       - flower
       - react-app
-
-  nginx-proxy-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    env_file:
-      - .env/.env.prod.proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - certs:/etc/nginx/certs
-      - html:/usr/share/nginx/html
-      - vhost:/etc/nginx/vhost.d
-      - acme:/etc/acme.sh
-    depends_on:
-      - nginx-proxy
 
   react-app:
     build:
@@ -110,7 +90,3 @@ services:
 
 volumes:
   postgres_data:
-  certs:
-  html:
-  vhost:
-  acme:
