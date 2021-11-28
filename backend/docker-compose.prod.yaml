@@ -20,6 +20,7 @@ services:
     depends_on:
       - web
       - flower
+      - react-app
 
   nginx-proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
