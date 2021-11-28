@@ -7,7 +7,7 @@ services:
     build: ./compose/production/nginx
     restart: always
     ports:
-      - "3000:3000"
+      - "8080:3000"
       - "443:443"
       - "8000:8000"
       - "5555:5555"
@@ -40,8 +40,6 @@ services:
       dockerfile: ./compose/production/react/Dockerfile
       args:
         - REACT_APP_NAME1=EvgeniyOm-prod
-    ports:
-      - "8080:3000"
     depends_on:
       - web
 
