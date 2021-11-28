@@ -1,4 +1,4 @@
-FROM node:16 as build
+FROM node:16
 WORKDIR /app
 COPY ./package*.json ./
 RUN npm install --production
@@ -6,8 +6,6 @@ COPY . .
 ARG REACT_APP_NAME1
 ENV REACT_APP_NAME1=$REACT_APP_NAME1
 
-RUN npm run build
+EXPOSE 3000
 
-FROM nginx
-COPY --from=build /app/build /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
