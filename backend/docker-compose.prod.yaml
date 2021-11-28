@@ -1,8 +1,6 @@
 version: '3.8'
 
 services:
-
-
   nginx:
     build: ./compose/production/nginx
     restart: always
@@ -10,6 +8,8 @@ services:
       - "8000:8000"
       - "5555:5555"
       - "15672:15672"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - web
       - flower
