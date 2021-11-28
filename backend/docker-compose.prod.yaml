@@ -5,6 +5,7 @@ services:
     build: ./compose/production/nginx
     restart: always
     ports:
+      - "80:80"
       - "8000:8000"
       - "5555:5555"
       - "15672:15672"
