@@ -40,8 +40,6 @@ services:
       dockerfile: ./compose/production/react/Dockerfile
       args:
         - REACT_APP_NAME1=EvgeniyOm-prod
-    ports:
-      - "80:80"
     depends_on:
       - web
 
