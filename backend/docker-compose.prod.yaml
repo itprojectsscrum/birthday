@@ -13,7 +13,7 @@ services:
     depends_on:
       - web
       - flower
-      - react-app
+      - react_app
 
   web:
     build:
