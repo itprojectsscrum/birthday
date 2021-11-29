@@ -8,6 +8,6 @@ ENV REACT_APP_NAME1=$REACT_APP_NAME1
 #COPY ./compose/production/react/start /start-react
 
 FROM nginx
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
