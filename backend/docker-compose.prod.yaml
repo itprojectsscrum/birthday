@@ -13,6 +13,7 @@ services:
     depends_on:
       - web
       - flower
+      - react-app
 
   web:
     build:
@@ -24,6 +25,18 @@ services:
     depends_on:
       - redis
       - db
+
+  react_app:
+    build:
+      context: .
+      dockerfile: ./compose/production/react/Dockerfile
+      args:
+        - REACT_APP_NAME1=EvgeniyOm-prod
+    stdin_open: true
+    tty: true
+#    command: /start-react
+    depends_on:
+      - web
 
   db:
     image: postgres:12.0-alpine
