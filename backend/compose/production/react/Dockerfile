@@ -5,6 +5,7 @@ RUN npm install --production
 COPY . .
 ARG REACT_APP_NAME1
 ENV REACT_APP_NAME1=$REACT_APP_NAME1
+RUN npm run build
 #COPY ./compose/production/react/start /start-react
 
 FROM nginx
