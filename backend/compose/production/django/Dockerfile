@@ -57,7 +57,8 @@ COPY ./compose/production/django/celery/flower/start /start-flower
 RUN chmod +x /start-flower
 
 RUN mkdir /app
-
+RUN mkdir /app/staticfiles
+RUN mkdir /app/mediafiles
 WORKDIR /app
 
 # copy project code
