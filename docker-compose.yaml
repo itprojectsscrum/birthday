@@ -21,6 +21,7 @@ services:
     build:
       context: ./frontend
     restart: always
+    tty: true
     volumes:
       - react_build:/react/build
 #  nginx:
