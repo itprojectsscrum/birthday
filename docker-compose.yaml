@@ -33,12 +33,7 @@ services:
 #      - "15672:15672"
 #    volumes:
 #      - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
-#      - react_build:/var/www/react
-#      - certs:/etc/nginx/certs
-#      - html:/usr/share/nginx/html
-#      - vhost:/etc/nginx/vhost.d
-#      - /var/run/docker.sock:/tmp/docker.sock:ro
-#
+#      - react_build:/var/www/react#
 #    depends_on:
 #      - backend
 #      - frontend
@@ -55,13 +50,14 @@ services:
       - "5555:5555"
       - "15672:15672"
     volumes:
+      - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
+      - react_build:/var/www/react
       - staticfiles:/app/staticfiles
       - mediafiles:/app/mediafiles
       - certs:/etc/nginx/certs
       - html:/usr/share/nginx/html
       - vhost:/etc/nginx/vhost.d
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - react_build:/var/www/react
     depends_on:
       - backend
       - frontend
