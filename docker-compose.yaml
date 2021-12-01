@@ -20,6 +20,8 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        - REACT_APP_NAME1=EvgeniyOm-prod
     tty: true
     volumes:
       - react_build:/react/build
