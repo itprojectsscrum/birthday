@@ -24,7 +24,7 @@ services:
         - REACT_APP_NAME1=EvgeniyOm-prod
     tty: true
     volumes:
-      - react_build:/react/build
+      - react_build:/app/build
   nginx:
     image: nginx:latest
     ports:
@@ -34,7 +34,7 @@ services:
       - "15672:15672"
     volumes:
       - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
-      - react_build:/var/www/react
+      - react_build:/var/www/app
     depends_on:
       - backend
       - frontend
