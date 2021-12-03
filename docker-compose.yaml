@@ -65,7 +65,7 @@ services:
     depends_on:
       - nginx
       - backend
-    command: certonly --webroot --webroot-path=/var/www/app --email birthdayappremainder@gmail.com --agree-tos --no-eff-email --staging -d bdaybook.ru  -d www.bdaybook.ru
+    command: certonly --webroot --webroot-path=/var/www/app --email birthdayappremainder@gmail.com --agree-tos --no-eff-email --force-renewal -d bdaybook.ru  -d www.bdaybook.ru
 
   db:
     image: postgres:12.0-alpine
