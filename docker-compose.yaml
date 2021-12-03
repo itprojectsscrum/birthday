@@ -37,15 +37,17 @@ services:
     container_name: nginx
     restart: unless-stopped
     ports:
-      - "80:80"  # Заменить на 80:80
+      - "80:80"  # frontend
       - "8000:8000"  # backend
       - "5555:5555"  # flower
       - "15672:15672"  # rabbitmq
+      - "433:433"  # https
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - react_build:/var/www/app
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
     depends_on:
       - frontend
       - backend
@@ -146,6 +148,12 @@ volumes:
   certbot-etc:
   certbot-var:
   react_build:
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/user_1/dhparam/
+      o: bind
 
 networks:
   app-network:
