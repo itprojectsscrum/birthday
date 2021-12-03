@@ -129,10 +129,6 @@ volumes:
   certbot-etc:
   certbot-var:
   react_build:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
 
 networks:
   app-network:
