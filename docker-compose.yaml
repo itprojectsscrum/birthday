@@ -5,7 +5,6 @@ services:
     build:
       context: ./backend
       dockerfile: ./compose/production/django/Dockerfile
-    container_name: backend
     command: /start
     volumes:
       - staticfiles:/app/staticfiles
