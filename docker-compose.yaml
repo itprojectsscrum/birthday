@@ -5,9 +5,8 @@ services:
     build:
       context: ./backend
       dockerfile: ./compose/production/django/Dockerfile
+    container_name: backend
     command: /start
-#    ports:
-#      - "8000:8000"
     volumes:
       - staticfiles:/app/staticfiles
       - mediafiles:/app/mediafiles
@@ -19,62 +18,48 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      args:
-        - REACT_APP_NAME1=EvgeniyOm-prod
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
     tty: true
+    environment:
+      NODE_ENV: production
     volumes:
       - react_build:/app/build
+    restart: unless-stopped
+    networks:
+      - app-network
+
   nginx:
-    image: nginx:latest
+    image: nginx:1.21
+    container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"  # Заменить на 80:80
-      - "8000:8000"
-      - "5555:5555"
-      - "15672:15672"
+      - "8000:8000"  # backend
+      - "5555:5555"  # flower
+      - "15672:15672"  # rabbitmq
     volumes:
-      - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx:/etc/nginx/conf.d
       - react_build:/var/www/app
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     depends_on:
       - backend
       - frontend
-#  nginx-proxy:
-#    container_name: nginx-proxy
-#    build:
-#      context: .
-#      dockerfile: ./nginx/Dockerfile
-#    restart: always
-#    ports:
-#      - "80:8080"
-#      - "443:443"
-#      - "8000:8000"
-#      - "5555:5555"
-#      - "15672:15672"
-#    volumes:
-#      - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
-#      - react_build:/var/www/react
-#      - staticfiles:/app/staticfiles
-#      - mediafiles:/app/mediafiles
-#      - certs:/etc/nginx/certs
-#      - html:/usr/share/nginx/html
-#      - vhost:/etc/nginx/vhost.d
-#      - /var/run/docker.sock:/tmp/docker.sock:ro
-#    depends_on:
-#      - backend
-#      - frontend
-#      - flower
-#  nginx-proxy-letsencrypt:
-#    image: jrcs/letsencrypt-nginx-proxy-companion
-#    env_file:
-#      - ./backend/.env/.env.prod.proxy
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
-#      - certs:/etc/nginx/certs
-#      - html:/usr/share/nginx/html
-#      - vhost:/etc/nginx/vhost.d
-#      - acme:/etc/acme.sh
-#    depends_on:
-#      - nginx-proxy
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - react_build:/var/www/app
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/app --email birthdayappremainder@gmail.com --agree-tos --no-eff-email --staging -d bdaybook.ru  -d www.bdaybook.ru
 
   db:
     image: postgres:12.0-alpine
@@ -138,11 +123,19 @@ services:
       - redis
       - db
 volumes:
-  react_build:
   postgres_data:
   staticfiles:
   mediafiles:
-#  certs:
-#  html:
-#  vhost:
-#  acme:
+  certbot-etc:
+  certbot-var:
+  react_build:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/user_2/birthday/views/
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge
+
