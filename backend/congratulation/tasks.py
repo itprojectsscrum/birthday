@@ -19,8 +19,8 @@ def to_schedule():
             if congratulate.owner.is_verified and congratulate.notify_by_email:
                 email_send.apply_async(
                     args=(
-                        f'Congratulate {congratulate.bday_name}',
-                        f'Congratulate {congratulate.bday_name}. \nComment: {congratulate.comment}',
+                        f'{congratulate.bday_name} сегодня празднует день рождения!',
+                        f'{congratulate.comment}',
                         congratulate.owner.email
                     ),
                     eta=congratulate.alert_datetime
