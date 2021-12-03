@@ -132,7 +132,6 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/user_2/birthday/views/
       o: bind
 
 networks:
