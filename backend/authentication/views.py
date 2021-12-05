@@ -62,6 +62,8 @@ class RegistrationAPIView(GenericAPIView):
 class VerifyEmailAPIView(GenericAPIView):
     """
     Верификация нового пользователя
+
+    Верификация нового пользователя
     """
     serializer_class = EmailVerificationSerializer
 
@@ -83,6 +85,8 @@ class VerifyEmailAPIView(GenericAPIView):
 class IsEmailVerifyAPIView(GenericAPIView):
     """
     Проверка верификации пользоваетеля
+
+    Проверка верификации пользоваетеля
     """
     serializer_class = IsEmailVerificationSerializer
 
@@ -101,6 +105,8 @@ class IsEmailVerifyAPIView(GenericAPIView):
 
 class LoginAPIView(GenericAPIView):
     """
+    Авторизация пользователя
+
     Авторизация пользователя
     """
     serializer_class = LoginSerializer
@@ -140,6 +146,8 @@ class LoginAPIView(GenericAPIView):
 class ChangePasswordAPIView(GenericAPIView):
     """
     Изменение пароля пользователя.
+
+    Изменение пароля пользователя.
     Доступно только для аутентифицированных пользователей
     """
     permission_classes = (permissions.IsAuthenticated,)
@@ -164,7 +172,9 @@ class ChangePasswordAPIView(GenericAPIView):
 
 class RequestPasswordResetEmail(GenericAPIView):
     """
-        Отправка Email пользователю для подтверждения запроса на встановление пароля.
+    Email для подтверждения встановление пароля.
+
+    Отправка Email пользователю для подтверждения запроса на встановление пароля.
     """
     serializer_class = ResetPasswordEmailRequestSerializer
 
@@ -192,7 +202,9 @@ class RequestPasswordResetEmail(GenericAPIView):
 
 class PasswordTokenCheckAPIView(GenericAPIView):
     """
-        Подтверждение Email пользователя на восстановление пароля
+    Подтверждение восстановление пароля
+
+    Подтверждение Email пользователя на восстановление пароля
     """
     serializer_class = SetNewPasswordSerializer
 
@@ -212,7 +224,9 @@ class PasswordTokenCheckAPIView(GenericAPIView):
 
 class SetNewPasswordAPIView(GenericAPIView):
     """
-       Установка нового пароля
+    Установка нового пароля
+
+    Установка нового пароля
     """
     serializer_class = SetNewPasswordSerializer
 
@@ -225,9 +239,10 @@ class SetNewPasswordAPIView(GenericAPIView):
 
 class LogoutAPIView(GenericAPIView):
     """
-       Выход из профиля пользователя
+    Выход из профиля пользователя
 
-       Занесение refresh token в blacklist
+    Выход из профиля пользователя
+    Занесение refresh token в blacklist
     """
     serializer_class = LogoutSerializer
 
@@ -263,10 +278,20 @@ class CookieTokenRefreshView(TokenRefreshView):
 
 
 class CustomTokenRefreshView(TokenRefreshView):
+    """
+    Обновление refresh токена
+
+    Обновление refresh токена
+    """
     serializer_class = CustomTokenRefreshSerializer
 
 
 class RepeatVerifyEmailAPIView(GenericAPIView):
+    """
+    Повторная отправка Email запроса верификации
+
+    Повторная отправка Email запроса верификации
+    """
     serializer_class = RepeatVerifyEmailSerializer
     renderer_classes = (UserRenderer,)
 
@@ -287,7 +312,11 @@ def send_verify_email(request, user):
     token = RefreshToken.for_user(user).access_token
     current_site = get_current_site(request).domain
     relative_link = reverse('email-verify')
-    absurl = f'http://{current_site}{relative_link}?token={str(token)}'
+
+    # remove api/v1
+    relative_link = '/'.join(relative_link.split('/')[3:])
+
+    absurl = f'http://{current_site}/{relative_link}?token={str(token)}'
     email_body = f'Hello. Use link below to verify your email \n{absurl}'
     data = {
         'email_subject': 'Verify your email',
@@ -299,7 +328,9 @@ def send_verify_email(request, user):
 
 class SupportEmailAPIView(GenericAPIView):
     """
-        Отправка Email службе поддержки
+    Отправка Email службе поддержки
+
+    Отправка Email службе поддержки
     """
     serializer_class = SupportEmailSerializer
 
