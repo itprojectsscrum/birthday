@@ -66,7 +66,9 @@ class VerifyEmailAPIView(GenericAPIView):
     Верификация нового пользователя
     """
     serializer_class = EmailVerificationSerializer
-
+    # test_param = openapi.Parameter('test', openapi.IN_QUERY, description="test manual param", type=openapi.TYPE_BOOLEAN)
+    #
+    # @swagger_auto_schema(operation_description="/auth/email-verify/{token}", manual_parameters=[test_param])
     def get(self, request):
         token = request.GET.get('token')
         try:
@@ -189,8 +191,10 @@ class RequestPasswordResetEmail(GenericAPIView):
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(request=request).domain
             relative_link = reverse(f'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            # remove api/v1
+            relative_link = '/'.join(relative_link.split('/')[3:])
 
-            absurl = 'http://' + current_site + relative_link
+            absurl = 'https://' + current_site + relative_link
             email_body = 'Hello,\n Use link below to reset your password \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your password'}
@@ -316,7 +320,7 @@ def send_verify_email(request, user):
     # remove api/v1
     relative_link = '/'.join(relative_link.split('/')[3:])
 
-    absurl = f'http://{current_site}/{relative_link}?token={str(token)}'
+    absurl = f'https://{current_site}/{relative_link}?token={str(token)}'
     email_body = f'Hello. Use link below to verify your email \n{absurl}'
     data = {
         'email_subject': 'Verify your email',
