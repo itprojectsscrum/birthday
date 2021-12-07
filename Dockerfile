@@ -8,7 +8,7 @@ COPY package*.json ./
 
 USER node
 
-RUN npm install
+RUN yarn install --production
 
 COPY --chown=node:node . .
 
