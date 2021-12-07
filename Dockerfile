@@ -1,6 +1,6 @@
 FROM node:16
 
-RUN mkdir -p /app/node_modules && chown -R node:node /app
+RUN mkdir -p /app && chown -R node:node /app
 
 WORKDIR /app
 
@@ -11,7 +11,5 @@ USER node
 RUN yarn install --production
 
 COPY --chown=node:node . .
-
-EXPOSE 8080
 
 RUN yarn run build
