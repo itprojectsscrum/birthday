@@ -37,7 +37,7 @@ services:
     container_name: nginx
     restart: unless-stopped
     ports:
-      - "80:80"  # frontend
+      - "8080:80"  # frontend
       - "8000:8000"  # backend
       - "5555:5555"  # flower
       - "15672:15672"  # rabbitmq
