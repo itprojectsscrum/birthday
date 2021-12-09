@@ -321,6 +321,8 @@ def send_verify_email(request, user):
     relative_link = '/'.join(relative_link.split('/')[3:])
 
     absurl = f'https://{current_site}{relative_link}?token={str(token)}'
+    import logging
+    logging.warning(f'{relative_link=}\n{absurl=}')
 
     email_body = f'Hello. Use link below to verify your email \n{absurl}'
     data = {
