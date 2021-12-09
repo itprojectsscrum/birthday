@@ -320,7 +320,8 @@ def send_verify_email(request, user):
     # remove api/v1
     relative_link = '/'.join(relative_link.split('/')[3:])
 
-    absurl = f'https://{current_site}/verify-email?token={str(token)}'
+    absurl = f'https://{current_site}{relative_link}?token={str(token)}'
+
     email_body = f'Hello. Use link below to verify your email \n{absurl}'
     data = {
         'email_subject': 'Verify your email',
