@@ -194,7 +194,7 @@ class RequestPasswordResetEmail(GenericAPIView):
             # remove api/v1
             relative_link = '/'.join(relative_link.split('/')[3:])
 
-            absurl = 'https://' + current_site + relative_link
+            absurl = 'https://' + current_site + '/' + relative_link
             email_body = 'Hello,\n Use link below to reset your password \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your password'}
@@ -320,9 +320,7 @@ def send_verify_email(request, user):
     # remove api/v1
     relative_link = '/'.join(relative_link.split('/')[3:])
 
-    absurl = f'https://{current_site}{relative_link}?token={str(token)}'
-    import logging
-    logging.warning(f'{relative_link=}\n{absurl=}')
+    absurl = f'https://{current_site}/{relative_link}?token={str(token)}'
 
     email_body = f'Hello. Use link below to verify your email \n{absurl}'
     data = {
