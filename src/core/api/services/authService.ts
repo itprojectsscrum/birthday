@@ -59,7 +59,6 @@ export const authApi = emptySplitApi.injectEndpoints({
         emailVerify: builder.query<void, string>({
             query: (search) => ({
                 url: `auth/email-verify/${search}`,
-                method: 'GET',
             }),
         }),
         repeatEmailVerify: builder.mutation<void, { email: string }>({

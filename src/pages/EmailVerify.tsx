@@ -7,7 +7,6 @@ import {authApi, useRepeatEmailVerifyMutation} from '../core/api/services/authSe
 
 function EmailVerify({privatePage}: { privatePage: boolean }) {
     const search = window.location.search
-    console.log(search)
     const {isSuccess, isError} = authApi.useEmailVerifyQuery(search)
     const [repeatEmailVerify] = useRepeatEmailVerifyMutation()
 
