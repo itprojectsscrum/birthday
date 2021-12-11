@@ -28,6 +28,6 @@ urlpatterns = [
     path('password-change/', ChangePasswordAPIView.as_view(), name='password-change'),
     path('password-reset-email/', RequestPasswordResetEmail.as_view(), name='password-reset-email'),
     path('password-reset/<uidb64>/<token>/', PasswordTokenCheckAPIView.as_view(), name='password-reset-confirm'),
-    path('password-reset-complete/', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
+    path('password-reset-complete', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
     path('support-email/', SupportEmailAPIView.as_view(), name='support-email'),
 ]
