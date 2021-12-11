@@ -47,7 +47,7 @@ services:
       - react_build:/var/www/app
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - dhparam:/etc/ssl/certs
+#      - dhparam:/etc/ssl/certs
     depends_on:
       - frontend
       - backend
@@ -65,7 +65,7 @@ services:
     depends_on:
       - nginx
       - backend
-    command: certonly --webroot --webroot-path=/var/www/app --email birthdayappremainder@gmail.com --agree-tos --no-eff-email --force-renewal -d bdaybook.ru  -d www.bdaybook.ru
+    command: certonly --webroot --webroot-path=/var/www/app --email birthdayappremainder@gmail.com --agree-tos --no-eff-email --staging -d bdaybook.ru  -d www.bdaybook.ru
 
   db:
     image: postgres:12.0-alpine
@@ -148,12 +148,12 @@ volumes:
   certbot-etc:
   certbot-var:
   react_build:
-  dhparam:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/user_1/dhparam/
-      o: bind
+#  dhparam:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /home/user_1/dhparam/
+#      o: bind
 
 networks:
   app-network:
