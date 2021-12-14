@@ -46,8 +46,46 @@ class RegistrationAPIView(GenericAPIView):
     serializer_class = RegistrationSerializer
     renderer_classes = (UserRenderer,)
     registation_response = openapi.Response('Успешная регистрация')
+    code_201 = openapi.Response(
+        description="Успешное создание записи",
+        examples={
+            "application/json": {
+                "data": {
+                    "email": "testemail@email.com"
+                }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_400 = openapi.Response(
+        description="Ошибка авторизации",
+        examples={
+            "application/json": {
+                "errors": {
+                    "email": [
+                        "message email error."
+                    ],
+                    "password": [
+                        "message password error."
+                    ]
+                }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
 
-    @swagger_auto_schema(responses={200: registation_response})
+    response_schema = {
+        status.HTTP_201_CREATED: code_201,
+        status.HTTP_400_BAD_REQUEST: code_400,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
@@ -66,9 +104,40 @@ class VerifyEmailAPIView(GenericAPIView):
     Верификация нового пользователя
     """
     serializer_class = EmailVerificationSerializer
-    # test_param = openapi.Parameter('test', openapi.IN_QUERY, description="test manual param", type=openapi.TYPE_BOOLEAN)
-    #
-    # @swagger_auto_schema(operation_description="/auth/email-verify/{token}", manual_parameters=[test_param])
+    test_param = openapi.Parameter('Токен', openapi.IN_QUERY, description="Токен из email", type=openapi.TYPE_STRING)
+    code_200 = openapi.Response(
+        description="Email подтвержден успешно",
+        examples={
+            "application/json": {
+                "data": {
+                    "email": "Successfully activated"
+                }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_400 = openapi.Response(
+        description="Токен не действителен",
+        examples={
+            "application/json": {
+                "error": "Invalid token"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_400_BAD_REQUEST: code_400,
+    }
+
+    @swagger_auto_schema(responses=response_schema, manual_parameters=[test_param])
     def get(self, request):
         token = request.GET.get('token')
         try:
@@ -92,6 +161,39 @@ class IsEmailVerifyAPIView(GenericAPIView):
     """
     serializer_class = IsEmailVerificationSerializer
 
+    code_200 = openapi.Response(
+        description="Email верифицирован или не вериицирован",
+        examples={
+            "application/json": {
+                "data": {
+                    "email": "Email is verified"
+                }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_404 = openapi.Response(
+        description="Email не найден",
+        examples={
+            "application/json": {
+                "error": "Email not found"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_404_NOT_FOUND: code_404,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -139,6 +241,43 @@ class LoginAPIView(GenericAPIView):
     #     return response
 
     # With local
+    code_200 = openapi.Response(
+        description="Вход выполнен успешно",
+        examples={
+            "application/json": {
+                  "email": "testmail@email.com",
+                  "tokens": {
+                    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3MTAzNjg2NCwianRpIjoiZmViMDJhZjIwYWRkNDNkZDkxNjRmNjIzYzAxM2FlOWEiLCJ1c2VyX2lkIjoyfQ.K7H2KZp2XLaFZrHFwRhH2fSZiEqFYMeHHG-c2HdRKrM",
+                    "refresh_live": "2022-12-14 16:54:24.669612",
+                    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM5NTAxNDY0LCJqdGkiOiJkMjViODMyZGQ1ZTc0MmU1OThmOTExMjNjN2RkMDNjNCIsInVzZXJfaWQiOjJ9.JTjL8TtdeT8oZMfGQiU5k5Us3NoW6tVT1kIpK8zpk5Q",
+                    "access_live": "2021-12-14 17:04:24.673909"
+                  }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_401 = openapi.Response(
+        description="Ошибка учетных данных",
+        examples={
+            "application/json": {
+                "detail": "Invalid credentials, try again"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_401_UNAUTHORIZED: code_401,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -155,6 +294,38 @@ class ChangePasswordAPIView(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ChangePasswordSerializer
 
+    code_200 = openapi.Response(
+        description="Пароль изменен успешно",
+        examples={
+            "application/json": {
+                "success": 'true',
+                "message": "Password reset success"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_401 = openapi.Response(
+        description="Ошибка учетных данных",
+        examples={
+            "application/json": {
+                "detail": "Invalid credentials, try again"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_401_UNAUTHORIZED: code_401,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -180,6 +351,37 @@ class RequestPasswordResetEmail(GenericAPIView):
     """
     serializer_class = ResetPasswordEmailRequestSerializer
 
+    code_200 = openapi.Response(
+        description="Успех. Email отправлен",
+        examples={
+            "application/json": {
+                "success": "We have sent you a link to reset your password"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_404 = openapi.Response(
+        description="Email не найден",
+        examples={
+            "application/json": {
+                "error": "Email not found"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_404_NOT_FOUND: code_404,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -206,12 +408,44 @@ class RequestPasswordResetEmail(GenericAPIView):
 
 class PasswordTokenCheckAPIView(GenericAPIView):
     """
-    Подтверждение восстановление пароля
+    Проверка возможности восстановления пароля
 
-    Подтверждение Email пользователя на восстановление пароля
+    Проверка данных пользователя для восстановление пароля
     """
     serializer_class = SetNewPasswordSerializer
 
+    code_200 = openapi.Response(
+        description="Данные действительны. Пароль возможно изменить",
+        examples={
+            "application/json": {
+                'success': 'true',
+                'message': 'Creantails Vaild'
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_400 = openapi.Response(
+        description="Ошибка. Токен не действителен",
+        examples={
+            "application/json": {
+                "error": "Token is not valid, please request a new one"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_400_BAD_REQUEST: code_400,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def get(self, request, uidb64, token):
 
         try:
@@ -219,11 +453,14 @@ class PasswordTokenCheckAPIView(GenericAPIView):
             user = User.objects.get(id=id)
 
             if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'error': 'Token is not valid, please request a new one'})
+                return Response({'error': 'Token is not valid, please request a new one'},
+                                status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({'success': True, 'message': 'Creantails Vaild', 'uidb64': uidb64})
-        except DjangoUnicodeDecodeError as e:
-            return Response({'error': 'Token is not valid, please request a new one'})
+            return Response({'success': True, 'message': 'Creantails Vaild', 'uidb64': uidb64},
+                            status=status.HTTP_200_OK)
+        except DjangoUnicodeDecodeError:
+            return Response({'error': 'Token is not valid, please request a new one'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class SetNewPasswordAPIView(GenericAPIView):
@@ -234,11 +471,42 @@ class SetNewPasswordAPIView(GenericAPIView):
     """
     serializer_class = SetNewPasswordSerializer
 
+    code_200 = openapi.Response(
+        description="Пароль изменен успешно",
+        examples={
+            "application/json": {
+                "success": 'true',
+                "message": "Password reset success"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_401 = openapi.Response(
+        description="Ошибка. Данные не верны",
+        examples={
+            "application/json": {
+                "detail": "The reset link is invalid"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_401_UNAUTHORIZED: code_401,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
-
 
 
 class LogoutAPIView(GenericAPIView):
@@ -252,9 +520,29 @@ class LogoutAPIView(GenericAPIView):
 
     permission_classes = (permissions.IsAuthenticated,)
 
-    @swagger_auto_schema(responses={401: openapi.Response('Не авторизован'), 204: openapi.Response('Выход из профиля пользователя')})
-    def post(self, request):
+    code_204 = openapi.Response(
+        description="Выход прошел успешно",
+    )
+    code_401 = openapi.Response(
+        description="Ошибка учетных данных",
+        examples={
+            "application/json": {
+                "detail": "Authentication credentials were not provided."
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
 
+    response_schema = {
+        status.HTTP_204_NO_CONTENT: code_204,
+        status.HTTP_401_UNAUTHORIZED: code_401,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
+    def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -299,6 +587,39 @@ class RepeatVerifyEmailAPIView(GenericAPIView):
     serializer_class = RepeatVerifyEmailSerializer
     renderer_classes = (UserRenderer,)
 
+    code_200 = openapi.Response(
+        description="Запрос отправлен успешно",
+        examples={
+            "application/json": {
+                "data": {
+                "email": "testemail@email.com"
+                }
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_404 = openapi.Response(
+        description="Ошибка. Email не найден",
+        examples={
+            "application/json": {
+                "error": "Email not found"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_404_NOT_FOUND: code_404,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
@@ -339,6 +660,45 @@ class SupportEmailAPIView(GenericAPIView):
     """
     serializer_class = SupportEmailSerializer
 
+    code_200 = openapi.Response(
+        description="Успех. Сообщение отправлено.",
+        examples={
+            "application/json": {
+                "success": "We have sent email"
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+    code_400 = openapi.Response(
+        description="Ошибка. Введенные данные не верны",
+        examples={
+            "application/json": {
+                "email": [
+                    "This field is required."
+                ],
+                "name": [
+                    "This field is required."
+                ],
+                "body": [
+                    "This field is required."
+                ]
+            }
+        },
+        schema=openapi.Schema(
+            title='See Example Value',
+            type=openapi.TYPE_OBJECT,
+        )
+    )
+
+    response_schema = {
+        status.HTTP_200_OK: code_200,
+        status.HTTP_400_BAD_REQUEST: code_400,
+    }
+
+    @swagger_auto_schema(responses=response_schema)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
