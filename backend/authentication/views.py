@@ -708,7 +708,7 @@ class SupportEmailAPIView(GenericAPIView):
         email = data['email']
         body = data['body']
 
-        data = {'email_body': f'From: {name}\n Email: {email}\n + Message: {body}',
+        data = {'email_body': f'From: {name}\nEmail: {email}\nMessage: {body}',
                 'to_email': settings.EMAIL_SUPPORT,
                 'email_subject': 'Support user'}
         Util.send_email(data)
